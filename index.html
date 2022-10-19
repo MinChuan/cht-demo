@@ -1,0 +1,87 @@
+git  是 ilnus trovolds 發明的 
+
+git add 時加到 staging area  暫存區(索引區, .git/INDEX)，產生 blob 物件 (一個以檔案hash 值為 目錄+檔名 的物件，內容是被壓縮果的 binary)
+git commit 時，產生 commit 檔案，內容指向 tree 檔案 (再指向 tree & blog)
+
+git cat-file {hash-value} -p
+git cat-file {hash-value} -t
+
+cat index.html | git hash-object --stdin
+
+untracked file (建立 但尚未 git add 至 staging 時)
+
+git commit 第一次時，會產生一個預設分支 (main), 並有一個 HEAD 指向它
+
+DAG, Directed Acyclic Graph 有向無環圖
+
+git add test.txt
+delete test.txt
+git restore test.txt
+
+分支只是貼在 commit 上的一張貼紙 (git 分支很便宜的)
+ = 一個40字元的檔案
+存在 ./git/refs/heads/ 下
+
+./git/refs/heads/main (master 分支)
+git branch cat
+-> 會產出 ./git/refs/heads/cat (cat 分支)
+   把 cat 檔名手動改成 dog, 則分支名也會改成 dog
+
+git branch -m ccc (將目前分支名改成 ccc)
+git branch -m main ccc (將main分支名改成 ccc)
+
+git 的重點是 commit 其它都只是浮雲 (branch, tag, 有的沒的...)
+
+HEAD 是什麼東西?
+是個檔案，內容是指向某個 branch name or commit sha1 hash-value
+上帝視角，目前操作者 看到什麼東西
+
+tag 有兩種: (存在 .git/refs/tags/ 內)
+  Annotated       (tag file 內容是指向一個 tag object, tag object 的內容則是指到 某 commit hash value + 額外加註的訊息 )  -> 官方建議(可額外增加訊息)
+  Lightweighted   (tag file 內容是 某 commit hash-value)
+
+  git tag -a v1.1  (Annotated tag, 會出現 editor 讓你補 tag 訊息)
+  
+
+git commit --amend
+(將此次的修改併到最近一次 commit)
+ 
+git commit --amend  -m "commit message ooxx" 
+(將此次的修改併到最近一次 commit & 修改 commit 訊息)
+
+因為修改時間變了，所以 commit 檔內容也變了，所以 commit id 也會改變唷!
+
+git reflog (看 HEAD 飛來飛去的狀態)
+
+git reset {commit id} --hard
+
+git rebase -i (--interactive)  互動式 rebase (可以指定 從目前 commit 到 某個 commit 的範圍)
+很好用的指令
+打了後，會出現 一個編輯器，讓你對每個 commit 要做什麼事做標記
+(reword(重下註解) squash(合併))
+:wq 後 進入更 detail 的訊息編輯
+
+如果 1個 commit 要拆成 2個的話，可以註記為 e(dit)
+:wq 後，開始進行
+
+然後在指令列下 
+
+git reset --soft   把commit 退回 staged
+          --mixed  把commit 退回 untracked 的 工作區   * (用這個...)
+          --hard   
+
+git add cat1 cat2
+git commit -m "拆出來的1st"
+
+git add cat3 cat4
+git commit -m "拆出來的2nd"
+
+git rebase --continue
+
+--
+
+
+git 內不會有破壞性操作，只會想辦法讓他看不見
+
+  --
+test test test
